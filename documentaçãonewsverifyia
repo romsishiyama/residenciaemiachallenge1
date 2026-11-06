@@ -1,1 +1,107 @@
+RESIDÊNCIA TECNOLÓGICA EM IA — PUC-CAMPINAS + INSTITUTO ELDORADO
 
+NewsVerify IA
+
+Análise exploratória de dados para apoio à identificação de desinformação política
+
+Autores: Maria Gabriely da Silva Freitas, Fabiano Borges da Silva, Moisés de Lima Pereira, Romênia Ishiyama, Douglas
+
+Salustiano
+
+Local e Ano: Campinas – SP, 2026
+
+Resumo: O NewsVerify IA investiga o uso da inteligência artificial no apoio à avaliação crítica de notícias políticas no
+contexto brasileiro. No primeiro ciclo de sete semanas da Residência em IA, realizaram-se estudos exploratórios e
+integração das bases FakeRecogna e FactPolCheckBr, resultando em um corpus consolidado de 4.236 registros
+equilibrados entre notícias falsas e verdadeiras. Analisaram-se abordagens supervisionadas e não supervisionadas sob
+a perspectiva da Aprendizagem Baseada em Desafios (CBL), visando a acessibilidade e a transparência na comunicação
+de resultados estatísticos.
+Palavras-chave: Inteligência Artificial; Análise Exploratória; Desinformação Política; Python; Acessibilidade Digital.
+1. Introdução
+A disseminação de informações em ambientes digitais expandiu o acesso ao conhecimento, mas também
+ampliou a circulação de conteúdos enganosos e descontextualizados. A Inteligência Artificial (IA) oferece
+capacidade de processamento para identificar padrões textuais, porém sistemas automatizados devem ser
+compreendidos estritamente como ferramentas de apoio ao pensamento crítico, sem substituir a verificação de
+fontes.
+O NewsVerify IA investiga como a análise exploratória e o aprendizado de máquina podem auxiliar na
+avaliação de informações políticas no cenário eleitoral de 2026. O projeto prioriza a acessibilidade digital para
+públicos não especializados, articulando-se com conteúdos educacionais de apoio como os canais Programação
+Dinâmica e Hashtag Programação.
+2. Objetivos
+Objetivo Geral: Investigar técnicas de análise exploratória e aprendizado de máquina em Python para apoiar
+a avaliação crítica de notícias políticas com responsabilidade social e acessibilidade.
+Objetivos Específicos: (a) Explorar os datasets FakeRecogna e FactPolCheckBr; (b) Tratar e integrar
+registros do recorte político; (c) Estudar modelos supervisionados e não supervisionados; (d) Propor uma
+aplicação web acessível.
+3. Materiais e Métodos
+3.1. Contexto e Aprendizagem Baseada em Desafios (CBL)
+Desenvolvido no primeiro ciclo da Residência em IA (PUC-Campinas/Eldorado), o projeto segue a abordagem
+CBL. O problema da desinformação é analisado sob o respaldo de iniciativas consolidadas de checagem, como
+Aos Fatos (AOS FATOS, 2026) e Fato ou Fake (FATO OU FAKE, 2026), além de programas institucionais
+como o Senado Verifica (SENADO FEDERAL, 2026), o Programa de Enfrentamento à Desinformação do
+STF (STF, 2026) e a campanha Brasil contra Fake (BRASIL, 2026). A dimensão ética apoia-se no Instituto
+Nina da Hora (INSTITUTO NINA DA HORA, 2026), na ONU Brasil (ONU BRASIL, 2026), no PNUD
+(PNUD BRASIL, 2026) e em Meira (2025).
+3.2. Tratamento e Integração das Bases de Dados
+Utilizou-se a biblioteca pandas em ambiente Google Colab para filtragem, remoção de duplicadas
+(`drop_duplicates`) e análise descritiva. A integração das fontes FakeRecogna (2026) e FactPolCheckBr
+(2026) resultou na seguinte distribuição:
+NewsVerify IA — Relatório Técnico (Residência em IA Eldorado/PUC-Campinas) Page 1 of 3
+
+Origem dos Dados Notícias Falsas (0) Notícias Verdadeiras (1) Total Registros
+FakeRecogna (após tratamento) 867 2.109 2.976
+FactPolCheckBr (após seleção) 1.251 9 1.260
+Base Integrada Final 2.118 2.118 4.236
+3.3. Fundamentos e Ilustração dos Algoritmos
+3.3.1. Árvore de Decisão (Supervisionado)
+Divide os dados por regras consecutivas baseadas em índices de impureza (Gini/Entropia).
+[Notícia Política] ──► ¿Contém "URGENTE"? ──(Sim)──► ¿Fonte Confiável? ──(Não)──► [FALSA]
+└─(Não)──► ¿Comprimento > 100? ──(Sim)──► [VERDADEIRA]
+from sklearn.tree import DecisionTreeClassifier
+modelo = DecisionTreeClassifier(random_state=42)
+modelo.fit(X_treino, y_treino)
+3.3.2. Regressão Logística (Supervisionado)
+Mapeia combinações lineares em probabilidades (0% a 100%) via função sigmoide.
+100% | 🔹 [ Notícia Verdadeira ] 50% | ------------ ( Limiar de Decisão: 50% ) --/-- 0% | 🔸 [
+Notícia Falsa ] --------------------/
+3.3.3. Naive Bayes (Supervisionado)
+Calcula a probabilidade de classe multiplicando as frequências relativas dos termos textuais.
+Texto ──► Termos Falsos ("Bomba", "Urgente") vs Verdadeiros ("Decreto", "Ministério") ──►
+Probabilidade Final
+3.3.4. DBSCAN (Não Supervisionado - Agrupamento)
+Identifica clusters por densidade ($\varepsilon$, MinPts) e sinaliza pontos isolados como ruído (-1).
+Cluster A (Eleições): ( ● ● ● ) Cluster B (Economia): ( ▲ ▲ ▲ ) ★ Ruído (Ponto Isolado)
+3.3.5. Isolation Forest (Detecção de Anomalias)
+Isola observações atípicas através de cortes aleatórios que exigem menor profundidade.
+Normal: Raiz ──► Corte 1 ──► Corte 2 ──► Corte 3 ──► Isolado (Alta profundidade) Anomalia: Raiz
+──► Corte 1 ──► ISOLADO! 🚨 (Poucas divisões)
+3.3.6. One-Class SVM (Detecção de Anomalias)
+Delimita uma fronteira de suporte RBF ao redor dos dados habituais para identificar desvios.
+4. Resultados, Proposta Web e Considerações Finais
+
+A análise consolidou um corpus equilibrado de 4.236 registros. Como desdobramento funcional, desenvolveu-
+se um MVP da aplicação no AWS PartyRock (Apêndice D), com painéis intuitivos e linguagem acessível. A
+
+pesquisa avança promovendo a integração entre rigor técnico, transparência estatística e cidadania digital.
+
+NewsVerify IA — Relatório Técnico (Residência em IA Eldorado/PUC-Campinas) Page 2 of 3
+
+5. Referências
+AOS FATOS. Agência de checagem. 2026. Disponível em: <https://www.aosfatos.org/>.
+
+BRASIL. SECOM. Brasil contra Fake. 2026. Disponível em: <https://www.gov.br/secom/pt-
+br/fatos/brasil-contra-fake>.
+
+FAKERECOGNA. Dataset de notícias. Repositório GitHub, 2026.
+FACTPOLCHECKBR. Dataset de checagem política. GitHub UFSCar, 2026.
+FATO OU FAKE. Serviço de checagem G1. 2026. Disponível em: <https://g1.globo.com/fato-ou-fake/>.
+INSTITUTO NINA DA HORA. Justiça Algorítmica. 2026. Disponível em: <https://ninadahora.org/>.
+MEIRA, Luciano. Inovação e pedagogia. In: Escola com IA Generativa. Campinas: Alínea, 2025.
+ONU BRASIL. Nações Unidas no Brasil. 2026. Disponível em: <https://brasil.un.org/>.
+PNUD BRASIL. Dados de Desenvolvimento Humano. 2026. Disponível em:
+<https://www.undp.org/pt/brazil>.
+SENADO FEDERAL. Senado Verifica. 2026. Disponível em: <https://www12.senado.leg.br/verifica>.
+STF. Enfrentamento à Desinformação. 2026. Disponível em: <https://portal.stf.jus.br/>.
+Apêndices
+Apêndice A: Colabs (A.1, A.2, A.3) | Apêndice B: Código Didático Scikit-Learn | Apêndice C: Slides Canva | Apêndice D:
+MVP AWS PartyRock
